@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "Schema Build and update tool",
   "main": "lib/schemer.js",
-    "repository": {
+  "repository": {
     "type": "git",
     "url": "git+https://github.com/bhoriuchi/knex-schemer.git"
   },
@@ -17,7 +17,7 @@
   "license": "MIT",
   "homepage": "https://github.com/bhoriuchi/knex-schemer",
   "devDependencies": {
-      "mysql": "^2.7.0"
+    "mysql": "^2.7.0"
   },
   "bugs": {
     "url": "https://github.com/bhoriuchi/knex-schemer/issues"
@@ -28,5 +28,8 @@
   },
   "scripts": {
     "test": "echo \\\"Error: no test specified\\\" && exit 1"
+  },
+  "directories": {
+    "example": "example"
   }
 }
