@@ -1,0 +1,32 @@
+{
+  "name": "knex-schemer",
+  "version": "0.1.0",
+  "description": "Schema Build and update tool",
+  "main": "lib/schemer.js",
+    "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bhoriuchi/knex-schemer.git"
+  },
+  "keywords": [
+    "knex",
+    "schema",
+    "builder",
+    "sync"
+  ],
+  "author": "Branden Horiuchi <bhoriuchi@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/bhoriuchi/knex-schemer",
+  "devDependencies": {
+      "mysql": "^2.7.0"
+  },
+  "bugs": {
+    "url": "https://github.com/bhoriuchi/knex-schemer/issues"
+  },
+  "dependencies": {
+    "knex": "^0.8.6",
+    "bluebird": "^2.9.27"
+  },
+  "scripts": {
+    "test": "echo \\\"Error: no test specified\\\" && exit 1"
+  }
+}
