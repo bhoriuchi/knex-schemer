@@ -28,7 +28,8 @@ var schema = {
 			id: {type: c.type.integer, primary: true, increments: true},
 			name: {type: c.type.string, size: 255},
 			username: {type: c.type.string, size: 100},
-			encryptedKey: {type: c.type.string, size: 255}		}
+			encryptedKey: {type: c.type.string, size: 255}
+		}
 };
 
 
@@ -165,7 +166,9 @@ Currently the following options and values are available. The main list item is 
   * field
 * **comment**
   * value
-
+* **ignore** (special option to ignore column)
+  * true
+  * false
 
 # Extending Schema
 ---
@@ -190,6 +193,24 @@ var schema = {
 
 ```
 in the above example the encrypt option means nothing to schemer, but it can potentially organize functions and attributes that are related to the database column
+
+# Ignoring
+---
+
+Ignore can be used to define a key in the schema but not create it in the database. This is useful when programmatically defining relationships
+
+##### Example
+```js
+var schema = {
+	credential: {
+		id: {type: c.type.integer, primary: true, increments: true},
+		name: {type: c.type.string, size: 255},
+		username: {type: c.type.string, size: 100},
+		encryptedKey: { type: c.type.string, size: 255 }
+		user: { ignore: true, table: 'user' }
+	}
+};
+```
 
 ## Tools
 ---

@@ -1,6 +1,6 @@
 {
   "name": "knex-schemer",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Schema Build and update tool",
   "main": "lib/schemer.js",
   "repository": {
