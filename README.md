@@ -58,6 +58,43 @@ schemer.sync(schema).then(function() {
 
 ```
 
+## Methods
+---
+**.sync(** *schema* **)**
+<br>
+Creates tables based on the the defined schema if they do not exist. If a table does exist, the actual columns in the database will be added or dropped based on the schema definition
+
+<br>
+**.syncTable(** *tableName*, *tableSchema* **)**
+<br>
+Creates or updates a single table. Returns a promise object
+
+<br>
+**.drop(** *schema* **)**
+<br>
+Drops all tables in the schema definition. Returns a promise object
+
+<br>
+**.dropTable(** *tableName* **)**
+<br>
+Drops a single table. Returns a promise object
+
+<br>
+**.load(** *data*, *schema* **)**
+<br>
+Inserts data into the database. Returns a promise object
+
+<br>
+**.convert(** *data*, *schema* **)**
+<br>
+Converts data to a format that is usable by the load function using the schema definition. Not necessary if data has been formatted correctly. Returns an object containing all of the data to load correctly formatted
+
+<br>
+**.convertAndLoad(** *data*, *schema* **)**
+<br>
+Combines the convert and load functions into a single call. Returns a promise object
+
+<br>
 
 ## Sync
 ---
