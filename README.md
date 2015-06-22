@@ -13,7 +13,7 @@ knex-schemer is a tool that allows you to define a database schema in JSON forma
   * added **load** function to load data into the table
   * added **convert** function to format load data so that it can be inserted
   * added **convertAndLoad** function which combines **load** and **convert** into a single function
-  * updated version to **0.1.3**
+  * updated version to **0.1.4**
 
 ## Install
 ```bash
