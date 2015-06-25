@@ -10,9 +10,11 @@ knex-schemer is a tool that allows you to define a database schema in JSON forma
 ## Whats New?
 ---
 * 06/25/2015
-  * added ignore when relationships (hasOne, hasMany, belongsTo, belongsToMany) are specified to work with bookshelf-factory (in development)
+  * added ignore when relationships (hasOne, hasMany, belongsTo and belongsToMany) are specified to work with bookshelf-factory (in development)
+  * added ignore for bookshelf-factory model parameters (extendProto and extendClass)
+  * exposed all functions
   * fixed bug where an SQL exception was thrown if the load data was an empty array
-  * updated version to **0.1.6**
+  * updated version to **0.1.7**
 * 06/22/2015
   * added **load** function to load data into the table
   * added **convert** function to format load data so that it can be inserted
@@ -97,6 +99,17 @@ Converts data to a format that is usable by the load function using the schema d
 **.convertAndLoad(** *data*, *schema* **)**
 <br>
 Combines the convert and load functions into a single call. Returns a promise object
+
+<br>
+**.manager.getPrimaryKeys(** *tableSchema* **)**
+<br>
+Gets the primary keys for a table
+
+<br>
+**.loader.checkSchema(** *data* , *tableSchema* **)**
+<br>
+Verifies that all required fields have been entered
+
 
 <br>
 
@@ -265,6 +278,8 @@ Ignore can be used to define a key in the schema but not create it in the databa
 * hasMany: "table name"
 * belongsTo: "table name"
 * belongsToMany: "table name"
+* extendProto: object containing bookshelf.js prototype extension
+* extendClass: object containing bookshelf.js class extension
 
 ##### Example
 ```js
