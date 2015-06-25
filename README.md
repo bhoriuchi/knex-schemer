@@ -9,6 +9,10 @@ knex-schemer is a tool that allows you to define a database schema in JSON forma
 
 ## Whats New?
 ---
+* 06/25/2015
+  * added ignore when relationships (hasOne, hasMany, belongsTo, belongsToMany) are specified to work with bookshelf-factory (in development)
+  * fixed bug where an SQL exception was thrown if the load data was an empty array
+  * updated version to **0.1.6**
 * 06/22/2015
   * added **load** function to load data into the table
   * added **convert** function to format load data so that it can be inserted
@@ -218,7 +222,15 @@ Currently the following options and values are available. The main list item is 
 * **ignore** (special option to ignore column)
   * true
   * false
-
+* **hasOne** (used by bookshelf-factory ignores column)
+  * table name
+* **hasMany** (used by bookshelf-factory ignores column)
+  * table name
+* **belongsTo** (used by bookshelf-factory ignores column)
+  * table name
+* **belongsToMany** (used by bookshelf-factory ignores column)
+  * table name
+  
 # Extending Schema
 ---
 One benefit to an object based definition is that you can supply additional schema options that are not necessarily used in building the database schema, but can be used by other processes and methods in your application.
@@ -246,7 +258,13 @@ in the above example the encrypt option means nothing to schemer, but it can pot
 # Ignoring
 ---
 
-Ignore can be used to define a key in the schema but not create it in the database. This is useful when programmatically defining relationships
+Ignore can be used to define a key in the schema but not create it in the database. This is useful when programmatically defining relationships or custom functions. To ignore a column any one of the following can be supplied
+
+* ignore: true
+* hasOne: <table name>
+* hasMany: <table name>
+* belongsTo: <table name>
+* belongsToMany: <table name>
 
 ##### Example
 ```js
@@ -255,15 +273,16 @@ var schema = {
 		id: {type: c.type.integer, primary: true, increments: true},
 		name: {type: c.type.string, size: 255},
 		username: {type: c.type.string, size: 100},
-		encryptedKey: { type: c.type.string, size: 255 }
-		user: { ignore: true, table: 'user' }
+		encryptedKey: { type: c.type.string, size: 255 },
+		user: { belongsTo: true, table: 'user' },
+		note: {ignore: true}
 	}
 };
 ```
 
 # Loading Data
 ---
-Data can be loaded using the load function. It is recommended that you first run your data through the convert function and use the output of that function to insert the data or the combined convertAndLoad function.
+Data can be loaded using the load function. It is recommended that you first run your data through the convert function and use the output of that function to insert the data or the combined convertAndLoad function
 
 ##### Load Data Format
 ```js

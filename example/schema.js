@@ -16,7 +16,8 @@ module.exports = function(c) {
 				name: {type: c.type.string, size: 255},
 				username: {type: c.type.string, size: 100},
 				encryptedKey: {type: c.type.string, size: 255},
-				description: {type: c.type.string, size: 500, nullable: true}
+				description: {type: c.type.string, size: 500, nullable: true},
+				user: {belongsTo: 'tag_translation'}
 			},
 			key_value_parse_config: {
 				id: {type: c.type.integer, primary: true, increments: true},
