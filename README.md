@@ -261,10 +261,10 @@ in the above example the encrypt option means nothing to schemer, but it can pot
 Ignore can be used to define a key in the schema but not create it in the database. This is useful when programmatically defining relationships or custom functions. To ignore a column any one of the following can be supplied
 
 * ignore: true
-* hasOne: <table name>
-* hasMany: <table name>
-* belongsTo: <table name>
-* belongsToMany: <table name>
+* hasOne: "table name"
+* hasMany: "table name"
+* belongsTo: "table name"
+* belongsToMany: "table name"
 
 ##### Example
 ```js
