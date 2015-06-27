@@ -9,6 +9,9 @@ knex-schemer is a tool that allows you to define a database schema in JSON forma
 
 ## Whats New?
 ---
+* 06/26/2015
+  * fixed a bug where adding a nullable property to an ignore or relationship would attempt to add the column
+  * updated version to **0.1.8**
 * 06/25/2015
   * added ignore when relationships (hasOne, hasMany, belongsTo and belongsToMany) are specified to work with bookshelf-factory (in development)
   * added ignore for bookshelf-factory model parameters (extendProto and extendClass)
