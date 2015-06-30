@@ -1,6 +1,6 @@
 {
   "name": "knex-schemer",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "Schema Build and update tool for knex",
   "main": "lib/schemer.js",
   "repository": {
@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "knex": "^0.8.6",
-    "bluebird": "^2.9.27",
+    "bluebird": "^2.9.30",
     "lodash": "^3.9.3"
   },
   "scripts": {

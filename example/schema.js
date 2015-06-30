@@ -18,7 +18,8 @@ module.exports = function(c) {
 				encryptedKey: {type: c.type.string, size: 255},
 				description: {type: c.type.string, size: 500, nullable: true},
 				user: {belongsTo: 'tag_translation'},
-				test: {extendProto: function() { return 'test'; }}
+				test: {extendProto: function() { return 'test'; }},
+				_auth: {read: function() { return 'permission check here'; }}
 			},
 			key_value_parse_config: {
 				id: {type: c.type.integer, primary: true, increments: true},

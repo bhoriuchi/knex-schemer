@@ -9,6 +9,11 @@ knex-schemer is a tool that allows you to define a database schema in JSON forma
 
 ## Whats New?
 ---
+* 06/29/2015
+  * added util module and moved all helper functions like getPrimaryKeys to it. maintained links to functions getPrimaryKeys and checkSchema in .manager and .loader respectively.
+  * added ability to ignore columns with names that begin with an underscore. this is to add more extensibility with other tools like bookshelf-factory
+  * reworked all of the ignore code into more understandable/reusable functions like .required(), .optional(), .nullable(), etc...
+  * updated version to **0.1.9**
 * 06/26/2015
   * fixed a bug where adding a nullable property to an ignore or relationship would attempt to add the column
   * updated version to **0.1.8**
@@ -284,6 +289,10 @@ Ignore can be used to define a key in the schema but not create it in the databa
 * extendProto: object containing bookshelf.js prototype extension
 * extendClass: object containing bookshelf.js class extension
 
+<br>
+
+Additionally any column name defined starting with an underscore (_) will also be ignored. This allows extensibility to be added for the entire table as opposed to each individual column
+
 ##### Example
 ```js
 var schema = {
@@ -293,7 +302,8 @@ var schema = {
 		username: {type: c.type.string, size: 100},
 		encryptedKey: { type: c.type.string, size: 255 },
 		user: { belongsTo: true, table: 'user' },
-		note: {ignore: true}
+		note: {ignore: true},
+		_auth: {read: function(user) { return validateUser(user, 'read'); }}}
 	}
 };
 ```
