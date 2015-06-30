@@ -109,12 +109,12 @@ Converts data to a format that is usable by the load function using the schema d
 Combines the convert and load functions into a single call. Returns a promise object
 
 <br>
-**.manager.getPrimaryKeys(** *tableSchema* **)**
+**.util.getPrimaryKeys(** *tableSchema* **)**
 <br>
 Gets the primary keys for a table
 
 <br>
-**.loader.checkSchema(** *data* , *tableSchema* **)**
+**.util.checkSchema(** *data* , *tableSchema* **)**
 <br>
 Verifies that all required fields have been entered
 
