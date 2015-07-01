@@ -9,6 +9,8 @@ knex-schemer is a tool that allows you to define a database schema in JSON forma
 
 ## Whats New?
 ---
+* ??/??/2015
+  * added exception handling to the loader
 * 06/29/2015
   * added util module and moved all helper functions like getPrimaryKeys to it. maintained links to functions getPrimaryKeys and checkSchema in .manager and .loader respectively.
   * added ability to ignore columns with names that begin with an underscore. this is to add more extensibility with other tools like bookshelf-factory

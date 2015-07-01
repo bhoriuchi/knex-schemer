@@ -13,7 +13,7 @@ module.exports = function(c) {
 			},
 			credential: {
 				id: {type: c.type.integer, primary: true, increments: true},
-				name: {type: c.type.string, size: 255},
+				name: {type: c.type.string, size: 2},
 				username: {type: c.type.string, size: 100},
 				encryptedKey: {type: c.type.string, size: 255},
 				description: {type: c.type.string, size: 500, nullable: true},
