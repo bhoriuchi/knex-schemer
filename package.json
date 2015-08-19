@@ -17,15 +17,15 @@
   "license": "MIT",
   "homepage": "https://github.com/bhoriuchi/knex-schemer",
   "devDependencies": {
-    "mysql": "^2.7.0"
+    "mysql": "^2.8.0"
   },
   "bugs": {
     "url": "https://github.com/bhoriuchi/knex-schemer/issues"
   },
   "dependencies": {
     "knex": "^0.8.6",
-    "bluebird": "^2.9.30",
-    "lodash": "^3.9.3"
+    "bluebird": "^2.9.34",
+    "lodash": "^3.10.1"
   },
   "scripts": {
     "test": "echo \\\"Error: no test specified\\\" && exit 1"
