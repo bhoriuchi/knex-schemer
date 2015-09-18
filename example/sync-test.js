@@ -13,7 +13,7 @@ var db = {
 		"database": "test",
 		"charset": "utf8"
 	},
-	"debug": true
+	"debug": false
 };
 
 
@@ -27,7 +27,10 @@ var schema  = require('./schema')(schemer.constants);
 var data    = require('./sample-data');
 
 // test a sync
+console.log('Starting Sync');
 return schemer.sync(schema.v2).then(function(result) {
+	console.log(result);
+	console.log('Sync Complete');
 	process.exit();
 });
 
