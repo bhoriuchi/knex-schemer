@@ -28,7 +28,7 @@ var data    = require('./sample-data');
 
 knex.transaction(function(trx) {
 	// drop the tables
-	schemer.drop(schema.v1, trx).then(function() {
+	return schemer.drop(schema.v1, trx).then(function() {
 		// test a sync
 		return schemer.sync(schema.v1, trx).then(function(result) {
 			
