@@ -16,7 +16,7 @@ module.exports = function(c) {
 				name: {type: c.type.string, size: 200},
 				username: {type: c.type.string, size: 100},
 				encryptedKey: {type: c.type.string, size: 255},
-				description: {type: c.type.string, size: 500, nullable: true},
+				description: {type: c.type.string, size: 500, nullable: true, defaultTo: 'testdefault'},
 				user: {belongsTo: 'tag_translation'},
 				test: {extendProto: function() { return 'test'; }},
 				_auth: {read: function() { return 'permission check here'; }}
@@ -37,6 +37,24 @@ module.exports = function(c) {
 				ignoreCase: {type: c.type.boolean},
 				testvalue2: {type: c.type.string, size: 5},
 				testvalue3: {type: c.type.string, size: 5}
+			},
+			types: {
+				bigInteger: {type: 'bigInteger'},
+				bool: {type: 'boolean'},
+				binary: {type: 'binary', length: 10},
+				date: {type: 'date'},
+				dateTime: {type: 'dateTime'},
+				decimal: {type: 'decimal', precision: 5, scale: 2},
+				float: {type: 'float', precision: 5, scale: 2},
+				integer: {type: 'integer', unsigned: false, primary: true},
+				json: {type: 'json'},
+				string: {type: 'string', size: 100, unique: true},
+				text: {type: 'text', textType: 'text'},
+				mediumtext: {type: 'text', textType:'mediumtext'},
+				longtext: {type: 'text', textType: 'longtext'},
+				time: {type: 'time'},
+				timestamp: {type: 'timestamp'},
+				uuid: {type: 'uuid'}
 			}
 	};
 	

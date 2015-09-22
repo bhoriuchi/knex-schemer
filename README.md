@@ -1,4 +1,4 @@
-# knex-schemer
+# ☯ knex-schemer
 | <h4>❁ Overview</h4> |
 | :--- |
 | <br>***knex-schemer*** is a tool that allows you to define a database schema in [`JSON`](http://json.org/) using *Knex-Schemer Definition Format*  or [`KSDF`](https://github.com/bhoriuchi/knex-schemer/wiki/Knex-Schemer-Definition-Format) and create/update/delete that schema using basic transactional functions. This approach allows you to re-use and extend the schema definition in different parts of your application. It also allows you to create and update database tables quickly. As named, the tool requires a [`knex`](http://knexjs.org/) instance to operate.<br><br> |

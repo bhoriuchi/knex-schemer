@@ -17,7 +17,8 @@
   "license": "MIT",
   "homepage": "https://github.com/bhoriuchi/knex-schemer",
   "devDependencies": {
-    "mysql": "^2.8.0"
+    "mysql": "^2.8.0",
+    "pg": "^4.3.0"
   },
   "bugs": {
     "url": "https://github.com/bhoriuchi/knex-schemer/issues"
