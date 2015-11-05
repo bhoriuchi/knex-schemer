@@ -17,15 +17,15 @@
   "license": "MIT",
   "homepage": "https://github.com/bhoriuchi/knex-schemer",
   "devDependencies": {
-    "mysql": "^2.8.0",
-    "pg": "^4.3.0"
+    "mysql": "^2.9.0",
+    "pg": "^4.4.3"
   },
   "bugs": {
     "url": "https://github.com/bhoriuchi/knex-schemer/issues"
   },
   "dependencies": {
-    "knex": "^0.8.6",
-    "bluebird": "^2.9.34",
+    "knex": "^0.9.0",
+    "bluebird": "^3.0.5",
     "lodash": "^3.10.1"
   },
   "scripts": {
