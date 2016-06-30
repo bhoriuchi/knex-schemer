@@ -1,6 +1,6 @@
 {
   "name": "knex-schemer",
-  "version": "0.1.17",
+  "version": "0.1.18",
   "description": "Schema Build and update tool for knex",
   "main": "lib/schemer.js",
   "repository": {
@@ -17,16 +17,16 @@
   "license": "MIT",
   "homepage": "https://github.com/bhoriuchi/knex-schemer",
   "devDependencies": {
-    "mysql": "^2.10.2",
-    "pg": "^4.4.6"
+    "knex": "^0.11.0",
+    "mysql": "^2.11.0",
+    "pg": "^6.0.0"
   },
   "bugs": {
     "url": "https://github.com/bhoriuchi/knex-schemer/issues"
   },
   "dependencies": {
-    "knex": "^0.10.0",
-    "bluebird": "^3.3.1",
-    "lodash": "^4.5.1"
+    "bluebird": "^3.4.0",
+    "lodash": "^4.13.0"
   },
   "scripts": {
     "test": "echo \\\"Error: no test specified\\\" && exit 1"
