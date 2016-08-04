@@ -617,8 +617,7 @@ function manage (knex) {
       if (!exists) {
         return trx.schema.createTable(tableName, function (table) {
           createTable(table, schema);
-        }).then(function (res) {
-          console.log('RES', res)
+        }).then(function () {
           return knex(tableName).columnInfo().transacting(trx);
         });
       } else {
