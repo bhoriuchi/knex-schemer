@@ -5,7 +5,7 @@
 
 // create a database connection
 var db = {
-	"client": "mysql",
+	"client": "pg",
 	"connection": {
 		"host": "127.0.0.1",
 		"user": "db",
@@ -17,27 +17,17 @@ var db = {
 };
 
 
-
-
-
 // import the modules
 var knex    = require('knex')(db);
-var schemer = require('../lib/schemer')(knex);
+var schemer = require('../../lib/schemer')(knex);
 var schema  = require('./schema')(schemer.constants);
 var data    = require('./sample-data');
 
-// drop the tables
-schemer.drop(schema.v1).then(function() {
-	// test a sync
-	return schemer.sync(schema.v1).then(function(result) {
-		
-		// load the data
-		return schemer.convertAndLoad(data, schema.v1).then(function() {
-			process.exit();
-		});
-	});
-});
 
+schemer.config.info.columnInfo('types').then(function(results) {
+	console.log(results);
+	process.exit();
+});
 
 
 

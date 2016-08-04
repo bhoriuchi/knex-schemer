@@ -22,26 +22,26 @@ var db = {
 
 // import the modules
 var knex    = require('knex')(db);
-var schemer = require('../lib/schemer')(knex);
+var schemer = require('../../lib/schemer')(knex);
 var schema  = require('./schema')(schemer.constants);
 var data    = require('./sample-data');
 
-knex.transaction(function(trx) {
-	// drop the tables
-	return schemer.drop(schema.v1, trx).then(function() {
-		// test a sync
-		return schemer.sync(schema.v1, trx).then(function(result) {
+//drop the tables
+schemer.drop(schema.v1).then(function() {
+	// test a sync
+	return schemer.sync(schema.v1).then(function(result) {
+		
+		// load the data
+		return schemer.convertAndLoad(data, schema.v1).then(function() {
 			
-			// load the data
-			return schemer.convertAndLoad(data, schema.v1, trx);
+			// dump the data
+			return schemer.dump(schema.v1).then(function(data) {
+				console.log(data);
+				process.exit();
+			});
 		});
 	});
-})
-.then(function() {
-	process.exit();
 });
-
-
 
 
 

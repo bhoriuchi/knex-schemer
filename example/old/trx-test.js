@@ -13,7 +13,7 @@ var db = {
 		"database": "test",
 		"charset": "utf8"
 	},
-	"debug": true
+	"debug": false
 };
 
 
@@ -22,16 +22,25 @@ var db = {
 
 // import the modules
 var knex    = require('knex')(db);
-var schemer = require('../lib/schemer')(knex);
+var schemer = require('../../lib/schemer')(knex);
 var schema  = require('./schema')(schemer.constants);
 var data    = require('./sample-data');
 
-// test a sync
-console.log('Starting Sync');
-return schemer.sync(schema.v2).then(function(result) {
-	console.log('Sync Complete');
+knex.transaction(function(trx) {
+	// drop the tables
+	return schemer.drop(schema.v1, trx).then(function() {
+		// test a sync
+		return schemer.sync(schema.v1, trx).then(function(result) {
+			
+			// load the data
+			return schemer.convertAndLoad(data, schema.v1, trx);
+		});
+	});
+})
+.then(function() {
 	process.exit();
 });
+
 
 
 
