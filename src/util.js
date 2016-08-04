@@ -15,11 +15,11 @@ export function pushUniq (val, arr = []) {
  * @returns {String[]|Number[]} Primary Key.
  */
 export function getPrimaryKeys (schema) {
-  let primary = [];
+  let primary = []
   _.forEach(schema, (col, name) => {
-    if (col.primary === true) primary.push(name);
+    if (col.primary === true) primary.push(name)
   })
-  return primary;
+  return primary
 }
 
 /**
@@ -44,7 +44,7 @@ export function ignorable (col, colName) {
   var ignore  = (!_.has(col, OPTS.ignore)) ? false : col.ignore
 
   // check for any ignore-able conditions
-  if (ignore || related || extend || dashCol || virtual) return true;
+  if (ignore || related || extend || dashCol || virtual) return true
   return false
 }
 
@@ -55,4 +55,53 @@ export function ignorable (col, colName) {
  */
 export function wrapPromise(obj) {
   return new Promise((resolve) => resolve(obj))
+}
+
+/**
+ * Determine if a column is null-able
+ * @param {SchemaDefinition} schema - Schema definition of the column to analyze.
+ * @returns {Boolean}
+ */
+export function nullable(col) {
+  return (!_.has(col, OPTS.nullable) || col.nullable === false) ? false : true
+}
+
+
+/**
+ * Determine if a column has a default
+ * @param {SchemaDefinition} schema - Schema definition of the column to analyze.
+ * @returns {Boolean}
+ */
+export function hasDefault(col) {
+  return _.has(col, OPTS.defaultTo)
+}
+
+/**
+ * Determine if a column is optional
+ * @param {SchemaDefinition} schema - Schema definition of the column to analyze.
+ * @param {String} name - Name of the column to analyze.
+ * @returns {Boolean}
+ */
+export function optional(col, colName) {
+  return (!ignorable(col, colName) && (nullable(col) || hasDefault(col)))
+}
+
+/**
+ * Check that the data being entered is compatible with the schema
+ * @param {Object[]} data - Data to validate.
+ * @param {SchemaDefinition} schema - Schema definition of the table the data belongs to.
+ * @returns {Boolean}
+ */
+export function checkSchema (data, tableSchema) {
+  if (!_.isArray(data) || !data.length || !_.isObject(tableSchema)) return false
+
+  _.forEach(data, (datum) => {
+    _.forEach(tableSchema, (col, colName) => {
+      if (!_.has(datum, colName) && required(col, colName) && !col.increments) {
+        console.log(`WARN: property or required mismatch on ${colName}["${col}"]`)
+        return false
+      }
+    })
+  })
+  return true
 }
