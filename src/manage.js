@@ -2,6 +2,7 @@ import Promise from 'bluebird'
 import * as _ from './litedash'
 import * as util from './util'
 import CONST from './constants'
+import { log } from './logger'
 
 const TYPE = CONST.type
 const OPTS = CONST.options
@@ -150,9 +151,11 @@ export default function (knex) {
    */
   let syncTable = function (tableName, schema, trx) {
     return trx.schema.hasTable(tableName).then((exists) => {
-      if (!exists && schema.type) {
+      if (!exists) {
         return trx.schema.createTable(tableName, (table) => {
           createTable(table, schema)
+        }).then(() => {
+          return knex(tableName).columnInfo().transacting(trx)
         })
       } else {
         return knex(tableName).columnInfo().transacting(trx).then((info) => {
@@ -200,10 +203,7 @@ export default function (knex) {
     let t = trx ? syncEx(trx) : knex.transaction((trx) => syncEx(trx))
 
     return util.wrapPromise(t).catch((err) => {
-      console.log({
-        message: 'A sync error occured',
-        error: err
-      })
+      log.error({ msg: 'A sync error occured', error: err })
     })
   }
 
@@ -230,10 +230,7 @@ export default function (knex) {
     let t = trx ? dropEx(trx) : knex.transaction((trx) => dropEx(trx))
 
     return util.wrapPromise(t).catch((err) => {
-      console.log({
-        message: 'A drop error occured',
-        error: err
-      })
+      log.error({ msg: 'A drop error occured', error: err })
     })
   }
 

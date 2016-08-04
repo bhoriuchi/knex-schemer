@@ -10,6 +10,16 @@ export function pushUniq (val, arr = []) {
 }
 
 /**
+ * Extend a schema object
+ * @param {Object} model - Model to extend.
+ * @param {Object} extending - Model that is extending.
+ * @returns {Object} Extended model.
+ */
+function extend(model, extending) {
+  return _.merge({}, model, extending)
+}
+
+/**
  * Obtain primary keys from the schema definition
  * @param {SchemaDefinition} schema - Schema definition.
  * @returns {String[]|Number[]} Primary Key.
@@ -104,4 +114,16 @@ export function checkSchema (data, tableSchema) {
     })
   })
   return true
+}
+
+export default {
+  pushUniq,
+  extend,
+  getPrimaryKeys,
+  ignorable,
+  wrapPromise,
+  nullable,
+  hasDefault,
+  optional,
+  checkSchema
 }

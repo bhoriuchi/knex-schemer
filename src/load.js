@@ -2,6 +2,7 @@ import Promise from 'bluebird'
 import * as _ from './litedash'
 import * as util from './util'
 import CONST from './constants'
+import { log } from './logger'
 
 const OPTS = CONST.options
 /**
@@ -42,11 +43,7 @@ export default function (knex) {
             } else if (util.optional(col, colName)) {
               dataCol[colName] = _.has(col, OPTS.defaultTo) ? col.defaultTo : null
             } else if (!util.ignorable(col, colName) && (!col.increments)){
-              console.log(
-                'WARN: the field',
-                colName, 'is missing or has invalid data in',
-                tableName + ':', datum, 'and will not be inserted'
-              )
+              log.warn(`Field ${colName} has invalid/missing data in ${tableName}:${datum} and will not be inserted`)
               validRow = false
             }
           })
@@ -75,7 +72,7 @@ export default function (knex) {
           if (exists && _.isArray(table) && util.checkSchema(table, schema[tableName])) {
             return trx.table(tableName).insert(table)
           } else {
-            console.log(`WARN: Failed to load data for ${tableName}. Incorrectly formatted or missing required data`)
+            log.warn(`Failed to load data for ${tableName}. Incorrectly formatted or missing required data`)
           }
         })
       })
@@ -84,10 +81,7 @@ export default function (knex) {
     let t = transaction ? loadEx(transaction) : knex.transaction((trx) => loadEx(trx))
 
     return util.wrapPromise(t).catch(function(err) {
-      console.error({
-        message: 'A load error occured',
-        error: err
-      })
+      log.error({ msg: 'A load error occured', error: err })
     })
   }
 

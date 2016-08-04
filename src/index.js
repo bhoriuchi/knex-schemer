@@ -2,6 +2,7 @@ import util from './util'
 import manage from './manage'
 import load from './load'
 import constants from './constants'
+import logger from './logger'
 
 const type = 'knex-schemer'
 const version = '1.0.0'
@@ -28,23 +29,6 @@ export default function (knex) {
     knex,
     manager,
     loader,
-    sync,
     util
-  }, manager, loader)
+  }, manager, loader, logger)
 }
-
-/*
-
- convert:        loader.convert,
- convertAndLoad: loader.convertAndLoad,
- constants:      mods.constants,
- drop:           manager.drop,
- dropTable:      manager.dropTable,
- loadData:       loader.loadData,
- loader:         loader,
- manager:        manager,
- sync:           manager.sync,
- syncTable:      manager.syncTable,
- dump:           dump,
- util:           mods.util
- */
