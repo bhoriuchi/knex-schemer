@@ -1,5 +1,6 @@
 var chai = global.chai = require('chai')
 var expect = global.expect = chai.expect
+var clientType = global.clientType = 'mysql'
 
 var config = {
   mysql: {
@@ -15,7 +16,7 @@ var config = {
   }
 }
 
-var knex = global.knex = require('knex')(config.mysql)
+var knex = global.knex = require('knex')(config[clientType])
 
 // set up schemer
 var schemer = global.schemer = require('../index')(knex)

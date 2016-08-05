@@ -1,7 +1,8 @@
 import Promise from 'bluebird'
 import * as _ from './litedash'
-import * as util from './util'
 import { log } from './logger'
+
+const METHOD = 'dump'
 
 /**
  * @author Branden Horiuchi <bhoriuchi@gmail.com>
@@ -16,26 +17,10 @@ import { log } from './logger'
  *
  * @ignore
  */
-export default function (knex) {
-  return function(opts) {
-    let schema = null
-    let tables = null
+export default function (knex, options = {}) {
+  return function(schema, transaction) {
     let output = {}
-    let transaction = null
-
-    if (!_.isHash(opts)) {
-      log.warn('No options were passed to dump')
-      return {}
-    }
-
-    if (!opts.schema) {
-      schema      = opts
-      tables      = _.keys(schema)
-    } else {
-      schema      = opts.schema
-      tables      = _.ensureArray(opts.tables || _.keys(schema))
-      transaction = opts.transaction
-    }
+    let tables = _.isHash(schema) ? _.keys(schema) : _.ensureArray(schema)
 
     let dumpEx = function (trx) {
       return Promise.each(tables, (table) => {
@@ -56,8 +41,20 @@ export default function (knex) {
 
     let t = transaction ? dumpEx(transaction) : knex.transaction((trx) => dumpEx(trx))
 
-    return util.wrapPromise(t).catch(function(err) {
-      log.error({ msg: 'A dump error occured', error: err })
+    return t.then((result) => {
+      log.trace({
+        METHOD,
+        tables,
+        results
+      })
+      return result
+    }).catch(function(err) {
+      log.error({
+        METHOD,
+        msg: 'A dump error occured',
+        tables,
+        error: err
+      })
     })
   }
 }

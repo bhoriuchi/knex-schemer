@@ -18,7 +18,7 @@ const OPTS = CONST.options
  *
  * @ignore
  */
-export default function (knex) {
+export default function (knex, options = {}) {
 
   /**
    * Attempt to convert data to be compatible with the schema definition

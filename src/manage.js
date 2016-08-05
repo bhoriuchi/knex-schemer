@@ -8,7 +8,7 @@ const TYPE = CONST.type
 const OPTS = CONST.options
 const getPrimaryKeys = util.getPrimaryKeys
 
-export default function (knex) {
+export default function (knex, options = {}) {
   /**
    * Creates a new column in the table using a column schema
    * @param {Table} table - Knex.js table object.

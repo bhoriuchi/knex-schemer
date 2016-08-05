@@ -1,6 +1,7 @@
 import util from './util'
 import manage from './manage'
 import load from './load'
+import dump from './dump'
 import constants from './constants'
 import logger from './logger'
 
@@ -18,9 +19,11 @@ const version = '1.0.0'
  * @param {knex} knex - An instance of knex.
  * @returns {Object}
  */
-export default function (knex) {
-  let manager = manage(knex)
-  let loader = load(knex)
+export default function (knex, options = {}) {
+  let manager = manage(knex, options)
+  let loader = load(knex, options)
+  let dump = dump(knex, options)
+  logger.configureLogger(options.log)
 
   return Object.assign({
     type,
@@ -29,6 +32,7 @@ export default function (knex) {
     knex,
     manager,
     loader,
+    dump,
     util
   }, manager, loader, logger)
 }

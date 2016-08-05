@@ -1,4 +1,4 @@
-import { isFunction } from './litedash'
+import { isObject } from './litedash'
 import manakin from 'manakin'
 let con = manakin.local
 
@@ -34,20 +34,37 @@ let config = {
 }
 
 export function setLevel (level) {
-  if (level >= 0) config.logLevel = level
+  if (!isNaN(level) && level >= 0) config.logLevel = level
 }
 
 export function setLogger (logger) {
-  if (isFunction(logger)) config.logger = logger
+  if (isObject(logger)) config.logger = logger
+}
+
+export function configureLogger (config = {}) {
+  if (config.level) setLevel(config.level)
+  if (config.logger) setLogger(config.logger)
 }
 
 export const log = {
-  fatal: (obj) => config.logger.fatal(obj),
-  error: (obj) => config.logger.error(obj),
-  warn: (obj) => config.logger.warn(obj),
-  info: (obj) => config.logger.info(obj),
-  debug: (obj) => config.logger.debug(obj),
-  trace: (obj) => config.logger.trace(obj)
+  fatal: function () {
+    if (config.logger.fatal) config.logger.fatal.apply(this, arguments)
+  },
+  error: function () {
+    if (config.logger.error) config.logger.error.apply(this, arguments)
+  },
+  warn: function () {
+    if (config.logger.warn) config.logger.warn.apply(this, arguments)
+  },
+  info: function () {
+    if (config.logger.info) config.logger.info.apply(this, arguments)
+  },
+  debug: function () {
+    if (config.logger.debug) config.logger.debug.apply(this, arguments)
+  },
+  trace: function () {
+    if (config.logger.trace) config.logger.trace.apply(this, arguments)
+  }
 }
 
 export default {
@@ -59,5 +76,6 @@ export default {
   TRACE,
   setLevel,
   setLogger,
+  configureLogger,
   log
 }
