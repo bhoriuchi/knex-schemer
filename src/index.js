@@ -1,7 +1,7 @@
 import util from './util'
 import manage from './manage'
 import load from './load'
-import dump from './dump'
+import dumper from './dump'
 import constants from './constants'
 import logger from './logger'
 
@@ -22,7 +22,7 @@ const version = '1.0.0'
 export default function (knex, options = {}) {
   let manager = manage(knex, options)
   let loader = load(knex, options)
-  let dump = dump(knex, options)
+  let dump = dumper(knex, options)
   logger.configureLogger(options.log)
 
   return Object.assign({

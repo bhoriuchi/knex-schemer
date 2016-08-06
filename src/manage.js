@@ -63,6 +63,9 @@ export default function (knex, options = {}) {
         case TYPE.boolean:
           column = table.boolean(colName)
           break
+        case TYPE.comment:
+          column = table.comment(col.comment)
+          break
         case TYPE.date:
           column = table.date(colName)
           break
@@ -79,7 +82,10 @@ export default function (knex, options = {}) {
           column = table.binary(colName, col.length)
           break
         case TYPE.json:
-          column = table.json(colName, col.jsonb)
+          column = table.json(colName)
+          break
+        case TYPE.jsonb:
+          column = table.jsonb(colName)
           break
         case TYPE.uuid:
           column = table.uuid(colName)
@@ -166,7 +172,7 @@ export default function (knex, options = {}) {
               })
             }
           }).then(() => {
-            return info;
+            return info
           })
         }).then((info) => {
           return Promise.map(_.keys(schema), (colName) => {
@@ -176,7 +182,7 @@ export default function (knex, options = {}) {
               })
             }
           }).then(() => {
-            return info
+            return knex(tableName).columnInfo().transacting(trx)
           })
         })
       }
@@ -190,19 +196,22 @@ export default function (knex, options = {}) {
    * @returns {Promise}
    */
   let sync = function (schema, trx) {
+    let returnVal = {}
     let syncEx = (trx) => {
-      return Promise.map(_.keys(schema), (tableName) => {
+      return Promise.each(_.keys(schema), (tableName) => {
         if (schema[tableName]._temporary === true) return
 
         return syncTable(tableName, schema[tableName], trx).then((result) => {
-          return result
+          returnVal[tableName] = result
         })
+      }).then(() => {
+        return returnVal
       })
     }
 
     let t = trx ? syncEx(trx) : knex.transaction((trx) => syncEx(trx))
 
-    return util.wrapPromise(t).catch((err) => {
+    return t.catch((err) => {
       log.error({ msg: 'A sync error occured', error: err })
     })
   }
@@ -215,7 +224,11 @@ export default function (knex, options = {}) {
    * @ignore
    */
   function dropTable(tableName, trx) {
-    return trx.schema.dropTableIfExists(tableName);
+    return trx.schema.dropTableIfExists(tableName).then(() => {
+      let result = {}
+      result[tableName] = true
+      return result
+    })
   }
 
 
@@ -229,7 +242,7 @@ export default function (knex, options = {}) {
     let dropEx = (trx) => Promise.map(_.keys(schema), (tableName) => dropTable(tableName, trx))
     let t = trx ? dropEx(trx) : knex.transaction((trx) => dropEx(trx))
 
-    return util.wrapPromise(t).catch((err) => {
+    return t.catch((err) => {
       log.error({ msg: 'A drop error occured', error: err })
     })
   }

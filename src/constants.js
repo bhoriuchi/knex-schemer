@@ -23,6 +23,7 @@ export default {
 		timestamp: 'timestamp',
 		binary: 'binary',
 		json: 'json',
+		jsonb: 'jsonb',
 		uuid: 'uuid',
 		enum: 'enum'
 	},

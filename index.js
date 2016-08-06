@@ -21,12 +21,6 @@ var toConsumableArray = function (arr) {
   }
 };
 
-/* lodash like functions to remove dependency on lodash */
-
-function isFunction(obj) {
-  return typeof obj === 'function';
-}
-
 function isString(obj) {
   return typeof obj === 'string';
 }
@@ -216,6 +210,7 @@ var CONST = {
 		timestamp: 'timestamp',
 		binary: 'binary',
 		json: 'json',
+		jsonb: 'jsonb',
 		uuid: 'uuid',
 		enum: 'enum'
 	},
@@ -426,31 +421,38 @@ var config = {
 };
 
 function setLevel(level) {
-  if (level >= 0) config.logLevel = level;
+  if (!isNaN(level) && level >= 0) config.logLevel = level;
 }
 
 function setLogger(logger) {
-  if (isFunction(logger)) config.logger = logger;
+  if (isObject(logger)) config.logger = logger;
+}
+
+function configureLogger() {
+  var config = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+  if (config.level) setLevel(config.level);
+  if (config.logger) setLogger(config.logger);
 }
 
 var log = {
-  fatal: function fatal(obj) {
-    return config.logger.fatal(obj);
+  fatal: function fatal() {
+    if (config.logger.fatal) config.logger.fatal.apply(this, arguments);
   },
-  error: function error(obj) {
-    return config.logger.error(obj);
+  error: function error() {
+    if (config.logger.error) config.logger.error.apply(this, arguments);
   },
-  warn: function warn(obj) {
-    return config.logger.warn(obj);
+  warn: function warn() {
+    if (config.logger.warn) config.logger.warn.apply(this, arguments);
   },
-  info: function info(obj) {
-    return config.logger.info(obj);
+  info: function info() {
+    if (config.logger.info) config.logger.info.apply(this, arguments);
   },
-  debug: function debug(obj) {
-    return config.logger.debug(obj);
+  debug: function debug() {
+    if (config.logger.debug) config.logger.debug.apply(this, arguments);
   },
-  trace: function trace(obj) {
-    return config.logger.trace(obj);
+  trace: function trace() {
+    if (config.logger.trace) config.logger.trace.apply(this, arguments);
   }
 };
 
@@ -463,6 +465,7 @@ var logger = {
   TRACE: TRACE,
   setLevel: setLevel,
   setLogger: setLogger,
+  configureLogger: configureLogger,
   log: log
 };
 
@@ -471,6 +474,8 @@ var OPTS$1 = CONST.options;
 var getPrimaryKeys$1 = getPrimaryKeys;
 
 function manage (knex) {
+  var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
   /**
    * Creates a new column in the table using a column schema
    * @param {Table} table - Knex.js table object.
@@ -525,6 +530,9 @@ function manage (knex) {
         case TYPE.boolean:
           column = table.boolean(colName);
           break;
+        case TYPE.comment:
+          column = table.comment(col.comment);
+          break;
         case TYPE.date:
           column = table.date(colName);
           break;
@@ -541,7 +549,10 @@ function manage (knex) {
           column = table.binary(colName, col.length);
           break;
         case TYPE.json:
-          column = table.json(colName, col.jsonb);
+          column = table.json(colName);
+          break;
+        case TYPE.jsonb:
+          column = table.jsonb(colName);
           break;
         case TYPE.uuid:
           column = table.uuid(colName);
@@ -639,7 +650,7 @@ function manage (knex) {
               });
             }
           }).then(function () {
-            return info;
+            return knex(tableName).columnInfo().transacting(trx);
           });
         });
       }
@@ -653,13 +664,16 @@ function manage (knex) {
    * @returns {Promise}
    */
   var sync = function sync(schema, trx) {
+    var returnVal = {};
     var syncEx = function syncEx(trx) {
-      return Promise$1.map(keys(schema), function (tableName) {
+      return Promise$1.each(keys(schema), function (tableName) {
         if (schema[tableName]._temporary === true) return;
 
         return syncTable(tableName, schema[tableName], trx).then(function (result) {
-          return result;
+          returnVal[tableName] = result;
         });
+      }).then(function () {
+        return returnVal;
       });
     };
 
@@ -667,7 +681,7 @@ function manage (knex) {
       return syncEx(trx);
     });
 
-    return wrapPromise(t).catch(function (err) {
+    return t.catch(function (err) {
       log.error({ msg: 'A sync error occured', error: err });
     });
   };
@@ -680,7 +694,11 @@ function manage (knex) {
    * @ignore
    */
   function dropTable(tableName, trx) {
-    return trx.schema.dropTableIfExists(tableName);
+    return trx.schema.dropTableIfExists(tableName).then(function () {
+      var result = {};
+      result[tableName] = true;
+      return result;
+    });
   }
 
   /**
@@ -699,7 +717,7 @@ function manage (knex) {
       return dropEx(trx);
     });
 
-    return wrapPromise(t).catch(function (err) {
+    return t.catch(function (err) {
       log.error({ msg: 'A drop error occured', error: err });
     });
   }
@@ -730,6 +748,8 @@ var OPTS$2 = CONST.options;
  * @ignore
  */
 function load (knex) {
+  var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
 
   /**
    * Attempt to convert data to be compatible with the schema definition
@@ -819,6 +839,67 @@ function load (knex) {
   };
 }
 
+var METHOD = 'dump';
+
+/**
+ * @author Branden Horiuchi <bhoriuchi@gmail.com>
+ * @license MIT
+ *
+ * @description
+ * Data dumping functions
+ *
+ * @module lib/core/dump
+ * @param {Object} modules - A hash of modules.
+ * @returns {Object}
+ *
+ * @ignore
+ */
+function dumper (knex) {
+  var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
+  return function (schema, transaction) {
+    var output = {};
+    var tables = isHash(schema) ? keys(schema) : ensureArray(schema);
+
+    var dumpEx = function dumpEx(trx) {
+      return Promise$1.each(tables, function (table) {
+        output[table] = [];
+
+        return knex.select('*').from(table).then(function (results) {
+          forEach(results, function (result) {
+            output[table].push(result);
+          });
+        });
+      }).then(function () {
+        forEach(output, function (value, name) {
+          if (!isArray(value) || !value.length) delete output[name];
+        });
+        return output;
+      });
+    };
+
+    var t = transaction ? dumpEx(transaction) : knex.transaction(function (trx) {
+      return dumpEx(trx);
+    });
+
+    return t.then(function (result) {
+      log.trace({
+        METHOD: METHOD,
+        tables: tables,
+        results: results
+      });
+      return result;
+    }).catch(function (err) {
+      log.error({
+        METHOD: METHOD,
+        msg: 'A dump error occured',
+        tables: tables,
+        error: err
+      });
+    });
+  };
+}
+
 var type = 'knex-schemer';
 var version = '1.0.0';
 
@@ -834,8 +915,12 @@ var version = '1.0.0';
  * @returns {Object}
  */
 function index (knex) {
-  var manager = manage(knex);
-  var loader = load(knex);
+  var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
+  var manager = manage(knex, options);
+  var loader = load(knex, options);
+  var dump = dumper(knex, options);
+  logger.configureLogger(options.log);
 
   return Object.assign({
     type: type,
@@ -844,6 +929,7 @@ function index (knex) {
     knex: knex,
     manager: manager,
     loader: loader,
+    dump: dump,
     util: util
   }, manager, loader, logger);
 }
