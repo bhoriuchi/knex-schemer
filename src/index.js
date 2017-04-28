@@ -1,38 +1,17 @@
-import util from './util'
-import manage from './manage'
-import load from './load'
-import dumper from './dump'
-import constants from './constants'
-import logger from './logger'
+import * as _ from './litedash'
+import Syncer from './sync'
 
-const type = 'knex-schemer'
-const version = '1.0.0'
+class KNEXSchemer {
+  constructor (knex) {
+    this.knex = knex
+  }
 
-/**
- * @author Branden Horiuchi <bhoriuchi@gmail.com>
- * @license MIT
- *
- * @description
- * Design, create, and update a relational database schema using JSON
- *
- * @module knex-schemer
- * @param {knex} knex - An instance of knex.
- * @returns {Object}
- */
-export default function (knex, options = {}) {
-  let manager = manage(knex, options)
-  let loader = load(knex, options)
-  let dump = dumper(knex, options)
-  logger.configureLogger(options.log)
+  sync (schema, options) {
+    options = _.isHash(options) ? options : {}
+    return new Syncer(this.knex, schema, options)
+  }
+}
 
-  return Object.assign({
-    type,
-    version,
-    constants,
-    knex,
-    manager,
-    loader,
-    dump,
-    util
-  }, manager, loader, logger)
+export default function (knex) {
+  return new KNEXSchemer(knex)
 }

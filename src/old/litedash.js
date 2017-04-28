@@ -146,9 +146,15 @@ export function without () {
   return output
 }
 
-function map (obj, fn) {
+export function map (obj, fn) {
   let output = []
-  forEach(obj, (v, k) => output.push(fn(v, k)))
+  try {
+    for (const key in obj) {
+      output.push(fn(obj[key], key))
+    }
+  } catch (err) {
+    return []
+  }
   return output
 }
 

@@ -29,6 +29,7 @@
     "babel-runtime": "^6.23.0",
     "chai": "^3.5.0",
     "knex": "^0.11.10",
+    "liteutils": "git+https://github.com/bhoriuchi/liteutils.git#master",
     "lodash": "^4.17.4",
     "mocha": "^3.3.0",
     "mysql": "^2.13.0",
