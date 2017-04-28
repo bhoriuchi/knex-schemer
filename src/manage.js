@@ -99,6 +99,15 @@ export default function (knex, options = {}) {
       }
     }
 
+    // MySQL specific
+    if (col.engine) column.engine(col.engine)
+    if (col.charset) column.charset(col.charset)
+    if (col.collate) column.collate(col.collate)
+
+    // PostgreSQL specific
+    if (col.inherits) column.inherits(col.inherits)
+
+    // General
     if (col.index === true) column.index(col.indexName, col.indexType)
     if (col.primary === true && primary.length === 1) column.primary()
     if (col.unique === true) column.unique()

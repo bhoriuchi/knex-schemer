@@ -12,6 +12,7 @@ export default {
 	type: {
 		integer: 'integer',
 		bigInteger: 'bigInteger',
+		comment: 'comment',
 		string: 'string',
 		text: 'text',
 		float: 'float',
