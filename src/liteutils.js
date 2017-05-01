@@ -151,7 +151,7 @@ keys._accepts = [Object, Array];
 keys._dependencies = ['dash.isArray', 'dash.range'];
 
 function reduce(collection, iteratee, accumulator) {
-  if (!isObject(collection) || !isArray(collection)) return undefined;
+  if (!isObject(collection) && !isArray(collection)) return undefined;
   if (!isFunction(iteratee)) {
     accumulator = iteratee;
     iteratee = identity;

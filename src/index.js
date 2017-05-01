@@ -1,4 +1,4 @@
-import * as _ from './litedash'
+import * as _ from './liteutils'
 import Syncer from './sync'
 
 class KNEXSchemer {

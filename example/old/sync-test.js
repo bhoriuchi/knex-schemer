@@ -1,7 +1,7 @@
 // Author: Branden Horiuchi <bhoriuchi@gmail.com>
 // Description: Example of usage
 //
-
+require('babel-register')
 
 // create a database connection
 var db = {
@@ -24,7 +24,6 @@ var db = {
 var knex    = require('knex')(db);
 var schemer = require('../../lib/schemer')(knex);
 var schema  = require('./schema')(schemer.constants);
-var data    = require('./sample-data');
 
 // test a sync
 console.log('Starting Sync');

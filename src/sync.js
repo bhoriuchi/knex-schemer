@@ -1,6 +1,27 @@
 import _ from './liteutils'
 import { TYPES } from './constants'
 
+/*
+function reduce (collection, iteratee, accumulator) {
+  console.log({collection, accumulator})
+  accumulator = accumulator !== undefined
+    ? accumulator
+    : _.isArray(collection)
+      ? collection.length
+        ? collection[0]
+        : undefined
+      : _.keys(collection).length
+        ? collection(_.keys(collection)[0])
+        : undefined
+
+  _.forEach(collection, (value, key) => {
+    accumulator = iteratee(accumulator, value, key, collection)
+  })
+
+  return accumulator
+}
+*/
+
 export default class Syncer {
   constructor (knex, schema, options) {
     let { transaction } = options
@@ -26,8 +47,9 @@ export default class Syncer {
   }
 
   createColumn (table, colName, colDef) {
-    this.setColumnOptions(
+    return this.setColumnOptions(
       this.setColumnType(table, colName, colDef),
+      colName,
       colDef
     )
   }
@@ -40,13 +62,28 @@ export default class Syncer {
       })
 
       this.setTablePrimaryKey(table, columns)
+      this.setTableForeignKey(table, columns)
       this.setTableIndexes(table, columns)
       this.setTableUniques(table, columns)
     })
   }
 
-  setColumnOptions (column, col) {
+  setColumnOptions (column, name, col) {
+    if (col.references) column = column.references(col.references)
+    if (col.inTable) column = column.inTable(col.inTable)
+    if (col.onDelete) column = column.onDelete(col.onDelete)
+    if (col.onUpdate) column = column.onUpdate(col.onUpdate)
+    if (col.defaultTo) column = column.defaultTo(col.defaultTo)
+    if (col.unsigned === true) column = column.unsigned()
+    column = col.nullable === true
+      ? column.nullable()
+      : column.notNullable()
+    if (col.first === true) column = column.first()
+    if (col.after) column = column.after(col.after)
+    if (col.comment) column = column.comment(col.comment)
+    if (col.collate) column = column.collate(col.collate)
 
+    return column
   }
 
   setColumnType (table, name, col) {
@@ -97,7 +134,7 @@ export default class Syncer {
     _.forEach(columns, (colDef, colName) => {
       if (colDef.index === true) {
         indexes[colName] = {
-          name: null,
+          name: undefined,
           cols: [colName],
           type: colDef.indexType
         }
@@ -147,9 +184,20 @@ export default class Syncer {
     // create constraint for primary key(s)
     let primary = _.reduce(columns, (keys, colDef, colName) => {
       if (colDef.primary === true) keys.push(colName)
+      return keys
     }, [])
 
     if (primary.length) table.primary(primary)
+  }
+
+  setTableForeignKey (table, columns) {
+    // create constraint for foreign key(s)
+    let foreign = _.reduce(columns, (keys, colDef, colName) => {
+      if (colDef.foreign === true) keys.push(colName)
+      return keys
+    }, [])
+
+    if (_.isArray(foreign) && foreign.length) table.foreign(foreign)
   }
 
   setTableOptions (table, opts) {
@@ -171,6 +219,7 @@ export default class Syncer {
     return Promise.all(_.map(this.schema, (definition, name) => {
       return this.syncTable(name, definition)
     }))
+      .then(console.log)
   }
 
   syncTable (name, definition) {
